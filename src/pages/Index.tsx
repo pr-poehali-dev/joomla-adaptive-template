@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '@/components/ui/sheet';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -11,8 +12,14 @@ import Icon from '@/components/ui/icon';
 const Index = () => {
   const [activeSection, setActiveSection] = useState<'home' | 'courses' | 'about'>('home');
   const [isFormOpen, setIsFormOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', course: '', message: '' });
   const { toast } = useToast();
+
+  const navigateTo = (section: 'home' | 'courses' | 'about') => {
+    setActiveSection(section);
+    setIsMobileMenuOpen(false);
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -199,9 +206,59 @@ const Index = () => {
                 </form>
               </DialogContent>
             </Dialog>
-            <button className="md:hidden">
-              <Icon name="Menu" size={24} />
-            </button>
+            <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+              <SheetTrigger asChild>
+                <button className="md:hidden">
+                  <Icon name="Menu" size={24} />
+                </button>
+              </SheetTrigger>
+              <SheetContent side="right" className="w-[300px] sm:w-[400px]">
+                <SheetHeader>
+                  <SheetTitle className="font-heading text-2xl">Меню</SheetTitle>
+                </SheetHeader>
+                <nav className="flex flex-col gap-6 mt-8">
+                  <button
+                    onClick={() => navigateTo('home')}
+                    className={`text-left text-lg font-semibold transition-colors hover:text-primary py-3 border-b ${
+                      activeSection === 'home' ? 'text-primary' : 'text-foreground'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon name="Home" size={20} />
+                      Главная
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => navigateTo('courses')}
+                    className={`text-left text-lg font-semibold transition-colors hover:text-primary py-3 border-b ${
+                      activeSection === 'courses' ? 'text-primary' : 'text-foreground'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon name="BookOpen" size={20} />
+                      Курсы
+                    </div>
+                  </button>
+                  <button
+                    onClick={() => navigateTo('about')}
+                    className={`text-left text-lg font-semibold transition-colors hover:text-primary py-3 border-b ${
+                      activeSection === 'about' ? 'text-primary' : 'text-foreground'
+                    }`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <Icon name="Info" size={20} />
+                      О центре
+                    </div>
+                  </button>
+                  <div className="mt-6">
+                    <Button className="w-full" size="lg" onClick={() => { setIsMobileMenuOpen(false); setIsFormOpen(true); }}>
+                      Записаться на курс
+                      <Icon name="ArrowRight" size={16} className="ml-2" />
+                    </Button>
+                  </div>
+                </nav>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </header>

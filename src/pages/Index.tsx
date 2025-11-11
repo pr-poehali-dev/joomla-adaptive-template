@@ -1,10 +1,28 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
 import Icon from '@/components/ui/icon';
 
 const Index = () => {
   const [activeSection, setActiveSection] = useState<'home' | 'courses' | 'about'>('home');
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', course: '', message: '' });
+  const { toast } = useToast();
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast({
+      title: 'Заявка отправлена!',
+      description: 'Мы свяжемся с вами в ближайшее время.',
+    });
+    setIsFormOpen(false);
+    setFormData({ name: '', email: '', phone: '', course: '', message: '' });
+  };
 
   const courses = [
     {
@@ -111,7 +129,76 @@ const Index = () => {
                 О центре
               </button>
             </nav>
-            <Button className="hidden md:flex">Записаться</Button>
+            <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
+              <DialogTrigger asChild>
+                <Button className="hidden md:flex">Записаться</Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[500px]">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-heading">Записаться на курс</DialogTitle>
+                  <DialogDescription>
+                    Оставьте заявку и мы свяжемся с вами для консультации
+                  </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Имя *</Label>
+                    <Input
+                      id="name"
+                      required
+                      placeholder="Иван Иванов"
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email *</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      required
+                      placeholder="ivan@example.com"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Телефон *</Label>
+                    <Input
+                      id="phone"
+                      type="tel"
+                      required
+                      placeholder="+7 (999) 123-45-67"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="course">Интересующий курс</Label>
+                    <Input
+                      id="course"
+                      placeholder="Веб-разработка"
+                      value={formData.course}
+                      onChange={(e) => setFormData({ ...formData, course: e.target.value })}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="message">Комментарий</Label>
+                    <Textarea
+                      id="message"
+                      placeholder="Расскажите о себе и своих целях"
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      rows={3}
+                    />
+                  </div>
+                  <Button type="submit" className="w-full">
+                    Отправить заявку
+                    <Icon name="Send" size={16} className="ml-2" />
+                  </Button>
+                </form>
+              </DialogContent>
+            </Dialog>
             <button className="md:hidden">
               <Icon name="Menu" size={24} />
             </button>
@@ -133,12 +220,12 @@ const Index = () => {
                     с гарантией трудоустройства.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <Button size="lg" className="text-base">
+                    <Button size="lg" className="text-base" onClick={() => setActiveSection('courses')}>
                       Выбрать курс
                       <Icon name="ArrowRight" size={20} className="ml-2" />
                     </Button>
-                    <Button size="lg" variant="outline" className="text-base">
-                      Узнать подробнее
+                    <Button size="lg" variant="outline" className="text-base" onClick={() => setIsFormOpen(true)}>
+                      Записаться на консультацию
                     </Button>
                   </div>
                 </div>
@@ -189,7 +276,7 @@ const Index = () => {
               <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
                 Запишитесь на бесплатную консультацию и узнайте, какой курс подходит именно вам
               </p>
-              <Button size="lg" variant="secondary" className="text-base">
+              <Button size="lg" variant="secondary" className="text-base" onClick={() => setIsFormOpen(true)}>
                 Записаться на консультацию
                 <Icon name="Calendar" size={20} className="ml-2" />
               </Button>
@@ -232,8 +319,8 @@ const Index = () => {
                         <span className="text-muted-foreground">Уровень: {course.level}</span>
                       </div>
                     </div>
-                    <Button className="w-full">
-                      Подробнее о курсе
+                    <Button className="w-full" onClick={() => { setFormData({ ...formData, course: course.title }); setIsFormOpen(true); }}>
+                      Записаться на курс
                       <Icon name="ArrowRight" size={16} className="ml-2" />
                     </Button>
                   </CardContent>

@@ -38,7 +38,7 @@ const HomePage = ({ setActiveSection, setIsFormOpen }: HomePageProps) => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="animate-fade-in">
               <h1 className="text-4xl md:text-6xl font-heading font-bold text-foreground mb-6 leading-tight">
-                Освойте профессию будущего
+                FREETINIYA - твой клуб по интересам
               </h1>
               <p className="text-lg text-muted-foreground mb-8">
                 Практические курсы по IT-профессиям от ведущих экспертов индустрии. Начните карьеру в технологиях
